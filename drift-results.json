@@ -2,20 +2,22 @@
   "environment_a": "dev",
   "environment_b": "prod",
   "total_keys_a": 23,
-  "total_keys_b": 26,
-  "timestamp": "2026-08-18T07:51:08.238444Z",
-  "commit": "initial",
+  "total_keys_b": 28,
+  "timestamp": "2026-08-18T08:26:22.318877+00:00",
+  "commit": "local",
   "triggered_by": "manual",
-  "commit_message": "Initial drift results",
+  "commit_message": "manual",
   "analysis": {
     "jaccard": {
-      "score": 0.8846,
-      "similarity_percentage": 88.46,
-      "key_drift_percentage": 11.54,
+      "score": 0.8214,
+      "similarity_percentage": 82.14,
+      "key_drift_percentage": 17.86,
       "only_in_a": [],
       "only_in_b": [
         "data.ALERT_EMAIL",
         "data.MONITORING_ENABLED",
+        "data.NEW_FEATURE",
+        "data.RATE_LIMIT",
         "metadata.labels.tier"
       ],
       "common_keys": [
@@ -45,24 +47,24 @@
       ]
     },
     "cosine": {
-      "score": 0.6681,
-      "similarity_percentage": 66.81,
-      "value_drift_percentage": 33.19,
+      "score": 0.7741,
+      "similarity_percentage": 77.41,
+      "value_drift_percentage": 22.59,
       "value_differences": {
         "commonLabels.environment": {
           "value_a": "dev",
           "value_b": "prod",
-          "numeric_a": 8587.0,
-          "numeric_b": 2075.0,
-          "change_pct": 75.84,
+          "numeric_a": 1928.0,
+          "numeric_b": 848.0,
+          "change_pct": 56.02,
           "direction": "decreased"
         },
         "data.APP_ENV": {
           "value_a": "development",
           "value_b": "production",
-          "numeric_a": 3829.0,
-          "numeric_b": 7555.0,
-          "change_pct": 97.31,
+          "numeric_a": 3262.0,
+          "numeric_b": 4806.0,
+          "change_pct": 47.33,
           "direction": "increased"
         },
         "data.CACHE_ENABLED": {
@@ -76,10 +78,10 @@
         "data.DB_HOST": {
           "value_a": "dev-db.internal",
           "value_b": "prod-db.internal",
-          "numeric_a": 2081.0,
-          "numeric_b": 6616.0,
-          "change_pct": 217.92,
-          "direction": "increased"
+          "numeric_a": 8673.0,
+          "numeric_b": 872.0,
+          "change_pct": 89.95,
+          "direction": "decreased"
         },
         "data.LOG_LEVEL": {
           "value_a": "debug",
@@ -116,51 +118,51 @@
         "metadata.labels.environment": {
           "value_a": "dev",
           "value_b": "prod",
-          "numeric_a": 8587.0,
-          "numeric_b": 2075.0,
-          "change_pct": 75.84,
+          "numeric_a": 1928.0,
+          "numeric_b": 848.0,
+          "change_pct": 56.02,
           "direction": "decreased"
         },
         "metadata.namespace": {
           "value_a": "driftlens-dev",
           "value_b": "driftlens-prod",
-          "numeric_a": 1175.0,
-          "numeric_b": 6611.0,
-          "change_pct": 462.64,
-          "direction": "increased"
+          "numeric_a": 5224.0,
+          "numeric_b": 922.0,
+          "change_pct": 82.35,
+          "direction": "decreased"
         },
         "namePrefix": {
           "value_a": "dev-",
           "value_b": "prod-",
-          "numeric_a": 2569.0,
-          "numeric_b": 7617.0,
-          "change_pct": 196.5,
+          "numeric_a": 3982.0,
+          "numeric_b": 7714.0,
+          "change_pct": 93.72,
           "direction": "increased"
         },
         "namespace": {
           "value_a": "driftlens-dev",
           "value_b": "driftlens-prod",
-          "numeric_a": 1175.0,
-          "numeric_b": 6611.0,
-          "change_pct": 462.64,
-          "direction": "increased"
+          "numeric_a": 5224.0,
+          "numeric_b": 922.0,
+          "change_pct": 82.35,
+          "direction": "decreased"
         },
         "patches[0].patch": {
           "value_a": "- op: replace\n  path: /spec/replicas\n  value: 1",
           "value_b": "- op: replace\n  path: /spec/replicas\n  value: 3",
-          "numeric_a": 5502.0,
-          "numeric_b": 3001.0,
-          "change_pct": 45.46,
-          "direction": "decreased"
+          "numeric_a": 3551.0,
+          "numeric_b": 9156.0,
+          "change_pct": 157.84,
+          "direction": "increased"
         }
       }
     },
     "combined": {
-      "score": 0.7547,
-      "similarity_percentage": 75.47,
-      "overall_drift_percentage": 24.53,
+      "score": 0.793,
+      "similarity_percentage": 79.3,
+      "overall_drift_percentage": 20.7,
       "drift_level": "MODERATE DRIFT",
-      "recommendation": "\u26a0\ufe0f VALUE DRIFT: Config keys match but values differ significantly. Review replicas, resource limits, and env-specific settings."
+      "recommendation": "\ud83d\udfe1 MODERATE DRIFT: Noticeable differences. Ensure all differences are intentional."
     }
   }
 }

@@ -1,4 +1,4 @@
-name: 🔍 Drift Detection
+name: Drift Detection
 
 on:
   push:
@@ -9,7 +9,6 @@ on:
 
 jobs:
   detect-drift:
-    name: 🔍 Detect Config Drift
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,37 +23,16 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: |
-          pip install -r backend/requirements.txt
+        run: pip install -r backend/requirements.txt
 
       - name: Detect Drift
+        run: python3 scripts/detect_drift.py
         env:
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: |
-          python3 scripts/detect_drift.py
-
-      - name: Show Results
-        run: |
-          echo "## 🔍 Drift Results" >> $GITHUB_STEP_SUMMARY
-          python3 -c "
-import json
-with open('drift-results.json') as f:
-    d = json.load(f)
-c = d['analysis']['combined']
-j = d['analysis']['jaccard']
-cos = d['analysis']['cosine']
-print('| Metric | Score |')
-print('|--------|-------|')
-print(f'| Jaccard | {j[\"similarity_percentage\"]}% |')
-print(f'| Cosine | {cos[\"similarity_percentage\"]}% |')
-print(f'| Combined | {c[\"similarity_percentage\"]}% |')
-print(f'| Level | **{c[\"drift_level\"]}** |')
-print(f'| Drift | {c[\"overall_drift_percentage\"]}% |')
-          " >> $GITHUB_STEP_SUMMARY
 
       - name: Commit Results
         run: |
           git config user.name "DriftLens Bot"
           git config user.email "driftlens@github-actions.com"
           git add drift-results.json
-          git diff --staged --quiet || git commit -m "🤖 drift-results updated" && git push
+          git diff --staged --quiet || git commit -m "drift-results updated" && git push

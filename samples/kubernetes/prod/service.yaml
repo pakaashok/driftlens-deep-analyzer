@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"sample-app","environment":"prod","managed-by":"driftlens","tier":"critical"},"name":"sample-app","namespace":"production"},"spec":{"ports":[{"name":"http","port":80,"targetPort":80}],"selector":{"app":"sample-app","environment":"prod","tier":"critical"},"type":"ClusterIP"}}
+  creationTimestamp: "2026-08-15T06:36:15Z"
+  labels:
+    app: sample-app
+    environment: prod
+    managed-by: driftlens
+    tier: critical
+  name: sample-app
+  namespace: production
+  resourceVersion: "767"
+  uid: 56c543fa-b332-4a32-9d2d-dae771a5adf4
+spec:
+  clusterIP: 10.98.153.92
+  clusterIPs:
+  - 10.98.153.92
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: sample-app
+    environment: prod
+    tier: critical
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

@@ -1,0 +1,23 @@
+apiVersion: v1
+data:
+  APP_ENV: development
+  CACHE_ENABLED: "false"
+  DB_HOST: dev-db.internal
+  LOG_LEVEL: debug
+  MAX_CONNECTIONS: "10"
+  TIMEOUT: "30"
+  VERSION: 1.0.0
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"APP_ENV":"development","CACHE_ENABLED":"false","DB_HOST":"dev-db.internal","LOG_LEVEL":"debug","MAX_CONNECTIONS":"10","TIMEOUT":"30","VERSION":"1.0.0"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app":"sample-app","environment":"dev","managed-by":"driftlens"},"name":"sample-app-config","namespace":"development"}}
+  creationTimestamp: "2026-08-15T06:36:02Z"
+  labels:
+    app: sample-app
+    environment: dev
+    managed-by: driftlens
+  name: sample-app-config
+  namespace: development
+  resourceVersion: "714"
+  uid: 90835654-cc7f-4da6-9bfa-a1a9c86eb197

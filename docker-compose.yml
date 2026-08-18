@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: driftlens-deep-backend
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./samples:/app/samples:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

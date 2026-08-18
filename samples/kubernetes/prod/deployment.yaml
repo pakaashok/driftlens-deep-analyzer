@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"sample-app","environment":"prod","managed-by":"driftlens","tier":"critical"},"name":"sample-app","namespace":"production"},"spec":{"replicas":5,"selector":{"matchLabels":{"app":"sample-app","environment":"prod","tier":"critical"}},"template":{"metadata":{"labels":{"app":"sample-app","environment":"prod","tier":"critical"}},"spec":{"containers":[{"envFrom":[{"configMapRef":{"name":"sample-app-config"}}],"image":"nginx:1.25","livenessProbe":{"httpGet":{"path":"/","port":80},"initialDelaySeconds":10,"periodSeconds":30},"name":"app","ports":[{"containerPort":80}],"readinessProbe":{"httpGet":{"path":"/","port":80},"initialDelaySeconds":5,"periodSeconds":10},"resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}}]}}}}
+  creationTimestamp: "2026-08-15T06:36:15Z"
+  generation: 8
+  labels:
+    app: sample-app
+    environment: prod
+    managed-by: driftlens
+    tier: critical
+  name: sample-app
+  namespace: production
+  resourceVersion: "3477"
+  uid: 6bd28c08-1f83-43a2-8211-4574b132c323
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 5
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: sample-app
+      environment: prod
+      tier: critical
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: sample-app
+        environment: prod
+        tier: critical
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: sample-app-config
+        image: nginx:1.25
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: app
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 5
+  conditions:
+  - lastTransitionTime: "2026-08-15T06:36:16Z"
+    lastUpdateTime: "2026-08-15T06:40:42Z"
+    message: ReplicaSet "sample-app-58d78bff" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2026-08-15T07:17:17Z"
+    lastUpdateTime: "2026-08-15T07:17:17Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 8
+  readyReplicas: 5
+  replicas: 5
+  terminatingReplicas: 2
+  updatedReplicas: 5

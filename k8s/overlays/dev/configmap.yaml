@@ -18,3 +18,5 @@ data:
   DB_HOST: dev-db.internal
   FEATURE_FLAG_A: "enabled"
   LOG_FORMAT: "json"
+  SYNC_TEST: "true"
+  BUILD_VERSION: "2.0.0"

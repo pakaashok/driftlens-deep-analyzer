@@ -1,9 +1,13 @@
-cd ~/driftlens-deep-analyzer && \
-git pull && \
-cat drift-results.json | python3 -m json.tool \
-  | grep -E "drift_level|commit" && \
-docker-compose restart && \
-sleep 15 && \
-curl -s http://localhost:8001/api/drift-results \
-  | python3 -m json.tool | grep -E \
-  "drift_level|timestamp"
+cat >> k8s/overlays/dev/configmap.yaml << 'EOF'
+  SYNC_TEST: "true"
+  BUILD_VERSION: "2.0.0"
+EOF
+
+# Push
+git add .
+git commit -m "test: sync speed test"
+git push origin main
+
+echo "✅ Pushed!"
+echo "👀 Watch dashboard update in ~5 seconds after GitHub Actions completes!"
+echo "🔗 https://github.com/pakaashok/driftlens-deep-analyzer/actions"

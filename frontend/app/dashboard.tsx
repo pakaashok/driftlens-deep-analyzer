@@ -175,7 +175,7 @@ export default function Dashboard() {
     const interval = setInterval(() => {
       loadDriftResults();
       loadMatrix();
-    }, 30000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [polling, loadDriftResults, loadMatrix]);
 

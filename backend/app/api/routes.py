@@ -151,9 +151,14 @@ def get_drift_results():
     """
     # Try GitHub Raw URL first (always latest!)
     try:
+        import time
+        url = f"{GITHUB_RAW_URL}?t={int(time.time())}"
         req = urllib.request.Request(
-            GITHUB_RAW_URL,
-            headers={"Cache-Control": "no-cache"}
+            url,
+            headers={
+                "Cache-Control": "no-cache, no-store",
+                "Pragma": "no-cache",
+            }
         )
         with urllib.request.urlopen(req, timeout=5) as r:
             return json.loads(r.read().decode())

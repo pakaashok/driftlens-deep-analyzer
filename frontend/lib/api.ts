@@ -108,7 +108,8 @@ export async function fetchMatrix(): Promise<MatrixResult> {
 
 export async function fetchDriftResults(): Promise<DriftResults> {
   const res = await fetch(
-    `${getApiUrl()}/api/drift-results`
+    `${getApiUrl()}/api/drift-results?t=${Date.now()}`,
+    { cache: "no-store" }
   );
   if (!res.ok) throw new Error(
     "Failed to fetch drift results"

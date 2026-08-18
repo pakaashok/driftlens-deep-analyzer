@@ -1,0 +1,112 @@
+name: 🔍 Drift Detection
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'k8s/**'
+  workflow_dispatch:
+
+jobs:
+  detect-drift:
+    name: 🔍 Detect Config Drift
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: Detect Drift
+        run: |
+          cd backend
+          python3 << 'PYEOF'
+import json, sys, glob
+from datetime import datetime, timezone
+sys.path.insert(0, '.')
+from app.core.tokenizer import Tokenizer
+from app.core.combined import CombinedScorer
+from app.core.k8s_filter import filter_config
+
+def load(path):
+    config = {}
+    for f in glob.glob(
+      f'{path}/**/*.yaml', recursive=True):
+        tokens = Tokenizer.tokenize_yaml(
+          open(f).read())
+        for t in tokens:
+            if '=' in t:
+                k, v = t.split('=', 1)
+                config[k.strip()] = v.strip()
+    return filter_config(config)
+
+dev  = load('../k8s/overlays/dev')
+prod = load('../k8s/overlays/prod')
+r = CombinedScorer.compare(dev, prod)
+
+out = {
+  'environment_a': 'dev',
+  'environment_b': 'prod',
+  'total_keys_a': len(dev),
+  'total_keys_b': len(prod),
+  'timestamp': datetime.now(
+    timezone.utc).isoformat(),
+  'commit': '${{ github.sha }}',
+  'triggered_by': '${{ github.actor }}',
+  'commit_message': '${{ github.event.head_commit.message }}',
+  'analysis': r.to_dict()
+}
+
+with open('../drift-results.json', 'w') as f:
+    json.dump(out, f, indent=2)
+
+c = out['analysis']['combined']
+print(f"✅ Level: {c['drift_level']}")
+print(f"✅ Drift: {c['overall_drift_percentage']}%")
+PYEOF
+
+      - name: Summary
+        run: |
+          echo "## 🔍 Drift Results" \
+            >> $GITHUB_STEP_SUMMARY
+          python3 -c "
+import json
+with open('drift-results.json') as f:
+    d = json.load(f)
+c = d['analysis']['combined']
+j = d['analysis']['jaccard']
+cos = d['analysis']['cosine']
+print('| Metric | Score |')
+print('|--------|-------|')
+print(f\"| 🔑 Jaccard | {j['similarity_percentage']}% |\")
+print(f\"| 📊 Cosine | {cos['similarity_percentage']}% |\")
+print(f\"| ⚡ Combined | {c['similarity_percentage']}% |\")
+print(f\"| 🚦 Level | **{c['drift_level']}** |\")
+print(f\"| 📈 Drift | {c['overall_drift_percentage']}% |\")
+" >> $GITHUB_STEP_SUMMARY
+
+      - name: Commit Results
+        run: |
+          git config user.name "DriftLens Bot"
+          git config user.email \
+            "driftlens@github-actions.com"
+          git add drift-results.json
+          git diff --staged --quiet || \
+          git commit -m "🤖 drift: $(python3 -c "
+import json
+with open('drift-results.json') as f:
+    d = json.load(f)
+c = d['analysis']['combined']
+print(f\"{c['drift_level']} - {c['overall_drift_percentage']}% drift\")
+")" && git push

@@ -21,3 +21,6 @@ data:
   MONITORING_ENABLED: "true"
   NEW_FEATURE: "enabled"
   RATE_LIMIT: "500"
+  NEW_FEATURE: "enabled"
+  RATE_LIMIT: "1000"
+  DEBUG_MODE: "false"

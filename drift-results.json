@@ -3,10 +3,10 @@
   "environment_b": "prod",
   "total_keys_a": 23,
   "total_keys_b": 28,
-  "timestamp": "2026-08-18T08:26:22.318877+00:00",
-  "commit": "local",
-  "triggered_by": "manual",
-  "commit_message": "manual",
+  "timestamp": "2026-08-18T08:28:37.611756+00:00",
+  "commit": "090403b28238fdac9c6948d827fb8f1a03e62e88",
+  "triggered_by": "pakaashok",
+  "commit_message": "",
   "analysis": {
     "jaccard": {
       "score": 0.8214,
@@ -47,25 +47,25 @@
       ]
     },
     "cosine": {
-      "score": 0.7741,
-      "similarity_percentage": 77.41,
-      "value_drift_percentage": 22.59,
+      "score": 0.7909,
+      "similarity_percentage": 79.09,
+      "value_drift_percentage": 20.91,
       "value_differences": {
         "commonLabels.environment": {
           "value_a": "dev",
           "value_b": "prod",
-          "numeric_a": 1928.0,
-          "numeric_b": 848.0,
-          "change_pct": 56.02,
+          "numeric_a": 4781.0,
+          "numeric_b": 1407.0,
+          "change_pct": 70.57,
           "direction": "decreased"
         },
         "data.APP_ENV": {
           "value_a": "development",
           "value_b": "production",
-          "numeric_a": 3262.0,
-          "numeric_b": 4806.0,
-          "change_pct": 47.33,
-          "direction": "increased"
+          "numeric_a": 953.0,
+          "numeric_b": 950.0,
+          "change_pct": 0.31,
+          "direction": "decreased"
         },
         "data.CACHE_ENABLED": {
           "value_a": "false",
@@ -78,10 +78,10 @@
         "data.DB_HOST": {
           "value_a": "dev-db.internal",
           "value_b": "prod-db.internal",
-          "numeric_a": 8673.0,
-          "numeric_b": 872.0,
-          "change_pct": 89.95,
-          "direction": "decreased"
+          "numeric_a": 1188.0,
+          "numeric_b": 8063.0,
+          "change_pct": 578.7,
+          "direction": "increased"
         },
         "data.LOG_LEVEL": {
           "value_a": "debug",
@@ -118,51 +118,51 @@
         "metadata.labels.environment": {
           "value_a": "dev",
           "value_b": "prod",
-          "numeric_a": 1928.0,
-          "numeric_b": 848.0,
-          "change_pct": 56.02,
+          "numeric_a": 4781.0,
+          "numeric_b": 1407.0,
+          "change_pct": 70.57,
           "direction": "decreased"
         },
         "metadata.namespace": {
           "value_a": "driftlens-dev",
           "value_b": "driftlens-prod",
-          "numeric_a": 5224.0,
-          "numeric_b": 922.0,
-          "change_pct": 82.35,
+          "numeric_a": 4711.0,
+          "numeric_b": 460.0,
+          "change_pct": 90.24,
           "direction": "decreased"
         },
         "namePrefix": {
           "value_a": "dev-",
           "value_b": "prod-",
-          "numeric_a": 3982.0,
-          "numeric_b": 7714.0,
-          "change_pct": 93.72,
+          "numeric_a": 4614.0,
+          "numeric_b": 7276.0,
+          "change_pct": 57.69,
           "direction": "increased"
         },
         "namespace": {
           "value_a": "driftlens-dev",
           "value_b": "driftlens-prod",
-          "numeric_a": 5224.0,
-          "numeric_b": 922.0,
-          "change_pct": 82.35,
+          "numeric_a": 4711.0,
+          "numeric_b": 460.0,
+          "change_pct": 90.24,
           "direction": "decreased"
         },
         "patches[0].patch": {
           "value_a": "- op: replace\n  path: /spec/replicas\n  value: 1",
           "value_b": "- op: replace\n  path: /spec/replicas\n  value: 3",
-          "numeric_a": 3551.0,
-          "numeric_b": 9156.0,
-          "change_pct": 157.84,
+          "numeric_a": 4068.0,
+          "numeric_b": 4090.0,
+          "change_pct": 0.54,
           "direction": "increased"
         }
       }
     },
     "combined": {
-      "score": 0.793,
-      "similarity_percentage": 79.3,
-      "overall_drift_percentage": 20.7,
-      "drift_level": "MODERATE DRIFT",
-      "recommendation": "\ud83d\udfe1 MODERATE DRIFT: Noticeable differences. Ensure all differences are intentional."
+      "score": 0.8031,
+      "similarity_percentage": 80.31,
+      "overall_drift_percentage": 19.69,
+      "drift_level": "LOW DRIFT",
+      "recommendation": "\u2705 LOW DRIFT: Minor differences detected. Review before promotion to production."
     }
   }
 }

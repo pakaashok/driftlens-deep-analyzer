@@ -1,7 +1,8 @@
 const getApiUrl = (): string => {
   if (typeof window !== "undefined") {
     const hostname = window.location.hostname;
-    if (hostname === "localhost" || hostname === "127.0.0.1") {
+    if (hostname === "localhost" ||
+        hostname === "127.0.0.1") {
       return "http://localhost:8001";
     }
     return `http://${hostname}:8001`;
@@ -59,12 +60,30 @@ export interface MatrixResult {
   }>>;
 }
 
+export interface DriftResults {
+  environment_a: string;
+  environment_b: string;
+  timestamp: string;
+  commit: string;
+  triggered_by: string;
+  commit_message: string;
+  total_keys_a: number;
+  total_keys_b: number;
+  analysis: DeepAnalysis["analysis"];
+  status?: string;
+  message?: string;
+}
+
 export async function fetchEnvironments(): Promise<{
   environments: string[];
   count: number;
 }> {
-  const res = await fetch(`${getApiUrl()}/api/environments`);
-  if (!res.ok) throw new Error("Failed to fetch environments");
+  const res = await fetch(
+    `${getApiUrl()}/api/environments`
+  );
+  if (!res.ok) throw new Error(
+    "Failed to fetch environments"
+  );
   return res.json();
 }
 
@@ -84,5 +103,15 @@ export async function fetchMatrix(): Promise<MatrixResult> {
     `${getApiUrl()}/api/analyze/matrix`
   );
   if (!res.ok) throw new Error("Matrix failed");
+  return res.json();
+}
+
+export async function fetchDriftResults(): Promise<DriftResults> {
+  const res = await fetch(
+    `${getApiUrl()}/api/drift-results`
+  );
+  if (!res.ok) throw new Error(
+    "Failed to fetch drift results"
+  );
   return res.json();
 }

@@ -1,3 +1,7 @@
+# DriftLens Deep Analyzer
+# Usage: docker-compose up -d
+# Dashboard: http://localhost:3001
+
 services:
   backend:
     image: adeeashok/driftlens-deep-analyzer:latest
@@ -6,15 +10,17 @@ services:
       - "8001:8000"
     volumes:
       - ./samples:/app/samples:ro
+      - ./drift-results.json:/app/drift-results.json:ro
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f",
-             "http://localhost:8000/api/health"]
+      test: ["CMD", "python3", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 15s
 
   frontend:
     image: adeeashok/driftlens-deep-frontend:latest
@@ -22,7 +28,8 @@ services:
     ports:
       - "3001:3000"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
 
 networks:

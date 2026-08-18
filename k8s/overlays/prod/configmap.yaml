@@ -19,3 +19,5 @@ data:
   DB_HOST: prod-db.internal
   ALERT_EMAIL: ops@company.com
   MONITORING_ENABLED: "true"
+  NEW_FEATURE: "enabled"
+  RATE_LIMIT: "1000"

@@ -2,20 +2,22 @@
   "environment_a": "dev",
   "environment_b": "prod",
   "total_keys_a": 23,
-  "total_keys_b": 29,
-  "timestamp": "2026-08-18T08:35:08.565974+00:00",
-  "commit": "8104ad68b1eefb519f545b8a571bf08c2b8031c8",
+  "total_keys_b": 31,
+  "timestamp": "2026-08-18T08:44:22.956479+00:00",
+  "commit": "6ae188899979e3fe56a4f825e489965232b3c591",
   "triggered_by": "pakaashok",
-  "commit_message": "test: add new prod config values",
+  "commit_message": "test: add EXTRA_FEATURE to prod",
   "analysis": {
     "jaccard": {
-      "score": 0.7931,
-      "similarity_percentage": 79.31,
-      "key_drift_percentage": 20.69,
+      "score": 0.7419,
+      "similarity_percentage": 74.19,
+      "key_drift_percentage": 25.81,
       "only_in_a": [],
       "only_in_b": [
         "data.ALERT_EMAIL",
         "data.DEBUG_MODE",
+        "data.EXTRA_FEATURE",
+        "data.MAX_RETRIES",
         "data.MONITORING_ENABLED",
         "data.NEW_FEATURE",
         "data.RATE_LIMIT",
@@ -48,25 +50,25 @@
       ]
     },
     "cosine": {
-      "score": 0.7548,
-      "similarity_percentage": 75.48,
-      "value_drift_percentage": 24.52,
+      "score": 0.8416,
+      "similarity_percentage": 84.16,
+      "value_drift_percentage": 15.84,
       "value_differences": {
         "commonLabels.environment": {
           "value_a": "dev",
           "value_b": "prod",
-          "numeric_a": 7263.0,
-          "numeric_b": 2762.0,
-          "change_pct": 61.97,
-          "direction": "decreased"
+          "numeric_a": 7897.0,
+          "numeric_b": 9825.0,
+          "change_pct": 24.41,
+          "direction": "increased"
         },
         "data.APP_ENV": {
           "value_a": "development",
           "value_b": "production",
-          "numeric_a": 3954.0,
-          "numeric_b": 5642.0,
-          "change_pct": 42.69,
-          "direction": "increased"
+          "numeric_a": 7707.0,
+          "numeric_b": 876.0,
+          "change_pct": 88.63,
+          "direction": "decreased"
         },
         "data.CACHE_ENABLED": {
           "value_a": "false",
@@ -79,10 +81,10 @@
         "data.DB_HOST": {
           "value_a": "dev-db.internal",
           "value_b": "prod-db.internal",
-          "numeric_a": 9822.0,
-          "numeric_b": 1071.0,
-          "change_pct": 89.1,
-          "direction": "decreased"
+          "numeric_a": 5850.0,
+          "numeric_b": 7858.0,
+          "change_pct": 34.32,
+          "direction": "increased"
         },
         "data.LOG_LEVEL": {
           "value_a": "debug",
@@ -119,51 +121,51 @@
         "metadata.labels.environment": {
           "value_a": "dev",
           "value_b": "prod",
-          "numeric_a": 7263.0,
-          "numeric_b": 2762.0,
-          "change_pct": 61.97,
-          "direction": "decreased"
+          "numeric_a": 7897.0,
+          "numeric_b": 9825.0,
+          "change_pct": 24.41,
+          "direction": "increased"
         },
         "metadata.namespace": {
           "value_a": "driftlens-dev",
           "value_b": "driftlens-prod",
-          "numeric_a": 1746.0,
-          "numeric_b": 6657.0,
-          "change_pct": 281.27,
-          "direction": "increased"
+          "numeric_a": 7469.0,
+          "numeric_b": 5679.0,
+          "change_pct": 23.97,
+          "direction": "decreased"
         },
         "namePrefix": {
           "value_a": "dev-",
           "value_b": "prod-",
-          "numeric_a": 3314.0,
-          "numeric_b": 4542.0,
-          "change_pct": 37.05,
+          "numeric_a": 8241.0,
+          "numeric_b": 9665.0,
+          "change_pct": 17.28,
           "direction": "increased"
         },
         "namespace": {
           "value_a": "driftlens-dev",
           "value_b": "driftlens-prod",
-          "numeric_a": 1746.0,
-          "numeric_b": 6657.0,
-          "change_pct": 281.27,
-          "direction": "increased"
+          "numeric_a": 7469.0,
+          "numeric_b": 5679.0,
+          "change_pct": 23.97,
+          "direction": "decreased"
         },
         "patches[0].patch": {
           "value_a": "- op: replace\n  path: /spec/replicas\n  value: 1",
           "value_b": "- op: replace\n  path: /spec/replicas\n  value: 3",
-          "numeric_a": 4816.0,
-          "numeric_b": 7816.0,
-          "change_pct": 62.29,
+          "numeric_a": 302.0,
+          "numeric_b": 3913.0,
+          "change_pct": 1195.7,
           "direction": "increased"
         }
       }
     },
     "combined": {
-      "score": 0.7701,
-      "similarity_percentage": 77.01,
-      "overall_drift_percentage": 22.99,
-      "drift_level": "MODERATE DRIFT",
-      "recommendation": "\ud83d\udfe1 MODERATE DRIFT: Noticeable differences. Ensure all differences are intentional."
+      "score": 0.8017,
+      "similarity_percentage": 80.17,
+      "overall_drift_percentage": 19.83,
+      "drift_level": "LOW DRIFT",
+      "recommendation": "\u2705 LOW DRIFT: Minor differences detected. Review before promotion to production."
     }
   }
 }

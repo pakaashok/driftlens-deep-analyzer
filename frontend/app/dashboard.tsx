@@ -136,7 +136,7 @@ export default function Dashboard() {
   const loadDriftResults = useCallback(async () => {
     try {
       const data = await fetchDriftResults();
-      if (data && !data.status) {
+      if (data && data.analysis) {
         setDriftResults(data);
         setLastUpdated(new Date().toLocaleTimeString());
       }
@@ -470,6 +470,71 @@ export default function Dashboard() {
                           </div>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Keys Only in Each Env */}
+                {(liveAnalysis.jaccard.only_in_a.length > 0 ||
+                  liveAnalysis.jaccard.only_in_b.length > 0) && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-xl border
+                      border-cyan-500/20 bg-cyan-500/5 p-4">
+                      <div className="flex items-center
+                        justify-between mb-3">
+                        <span className="text-sm font-semibold
+                          text-cyan-400">
+                          Only in dev
+                        </span>
+                        <span className="px-2 py-0.5
+                          rounded-full text-xs font-bold
+                          bg-cyan-500/20 text-cyan-400">
+                          {liveAnalysis.jaccard.only_in_a.length}
+                        </span>
+                      </div>
+                      {liveAnalysis.jaccard.only_in_a.length === 0 ? (
+                        <p className="text-xs text-white/30
+                          text-center py-2">No unique keys</p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {liveAnalysis.jaccard.only_in_a.map((k) => (
+                            <span key={k} className="text-xs font-mono
+                              px-2 py-1 rounded-lg bg-cyan-500/10
+                              border border-cyan-500/20 text-cyan-300">
+                              {k}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="rounded-xl border
+                      border-violet-500/20 bg-violet-500/5 p-4">
+                      <div className="flex items-center
+                        justify-between mb-3">
+                        <span className="text-sm font-semibold
+                          text-violet-400">
+                          Only in prod
+                        </span>
+                        <span className="px-2 py-0.5
+                          rounded-full text-xs font-bold
+                          bg-violet-500/20 text-violet-400">
+                          {liveAnalysis.jaccard.only_in_b.length}
+                        </span>
+                      </div>
+                      {liveAnalysis.jaccard.only_in_b.length === 0 ? (
+                        <p className="text-xs text-white/30
+                          text-center py-2">No unique keys</p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {liveAnalysis.jaccard.only_in_b.map((k) => (
+                            <span key={k} className="text-xs font-mono
+                              px-2 py-1 rounded-lg bg-violet-500/10
+                              border border-violet-500/20 text-violet-300">
+                              {k}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

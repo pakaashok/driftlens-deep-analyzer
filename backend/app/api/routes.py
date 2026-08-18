@@ -4,6 +4,7 @@ DriftLens Deep Analyzer - API Routes
 
 import os
 import json
+import urllib.request
 from fastapi import APIRouter, HTTPException, Query
 from app.modules.kubernetes import KubernetesDriftDetector
 from app.core.combined import CombinedScorer
@@ -12,6 +13,13 @@ from app.core.k8s_filter import filter_config
 
 router = APIRouter(prefix="/api", tags=["Deep Drift"])
 k8s_detector = KubernetesDriftDetector()
+
+# GitHub Raw URL for drift-results.json
+GITHUB_RAW_URL = (
+    "https://raw.githubusercontent.com/"
+    "pakaashok/driftlens-deep-analyzer/"
+    "main/drift-results.json"
+)
 
 
 @router.get("/health")
@@ -136,13 +144,28 @@ def analyze_matrix(filter_noise: bool = Query(True)):
 
 @router.get("/drift-results")
 def get_drift_results():
-    """Get latest drift results from GitHub Actions."""
+    """
+    Get latest drift results.
+    Reads directly from GitHub - always fresh!
+    No git pull or restart needed!
+    """
+    # Try GitHub Raw URL first (always latest!)
+    try:
+        req = urllib.request.Request(
+            GITHUB_RAW_URL,
+            headers={"Cache-Control": "no-cache"}
+        )
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return json.loads(r.read().decode())
+    except Exception:
+        pass
+
+    # Fallback to local file
     paths = [
         "/app/drift-results.json",
         "drift-results.json",
         "../drift-results.json",
     ]
-
     for path in paths:
         if os.path.exists(path):
             with open(path) as f:

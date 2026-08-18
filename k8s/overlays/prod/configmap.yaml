@@ -24,3 +24,5 @@ data:
   NEW_FEATURE: "enabled"
   RATE_LIMIT: "1000"
   DEBUG_MODE: "false"
+  EXTRA_FEATURE: "enabled"
+  MAX_RETRIES: "5"

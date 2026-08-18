@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driftlens-deep-backend
+  labels:
+    app: driftlens-deep
+    component: backend
+    managed-by: driftlens
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driftlens-deep
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: driftlens-deep
+        component: backend
+    spec:
+      containers:
+        - name: backend
+          image: adeeashok/driftlens-deep-analyzer:latest
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 30

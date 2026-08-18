@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driftlens-deep-frontend
+  labels:
+    app: driftlens-deep
+    component: frontend
+    managed-by: driftlens
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: driftlens-deep
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: driftlens-deep
+        component: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: adeeashok/driftlens-deep-frontend:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi

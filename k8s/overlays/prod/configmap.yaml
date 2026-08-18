@@ -20,4 +20,4 @@ data:
   ALERT_EMAIL: ops@company.com
   MONITORING_ENABLED: "true"
   NEW_FEATURE: "enabled"
-  RATE_LIMIT: "1000"
+  RATE_LIMIT: "500"

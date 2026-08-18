@@ -16,3 +16,5 @@ data:
   TIMEOUT: "30"
   VERSION: "1.0.0"
   DB_HOST: dev-db.internal
+  FEATURE_FLAG_A: "enabled"
+  LOG_FORMAT: "json"

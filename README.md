@@ -1,341 +1,397 @@
 # 🔬 DriftLens Deep Analyzer
 
-> **End-to-end Kubernetes configuration drift detection — powered by Jaccard + Cosine Similarity algorithms**
+> **End-to-end Kubernetes configuration drift detection using Jaccard + Cosine Similarity algorithms.**
+> Changes in K8s configs automatically trigger drift detection via GitHub Actions and reflect in the Live Dashboard!
 
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Next.js](https://img.shields.io/badge/Next.js-16-black)
-![FastAPI](https://img.shields.io/badge/FastAPI-latest-009688)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
-![Tests](https://img.shields.io/badge/Tests-55%20Passing-success)
-![License](https://img.shields.io/badge/License-MIT-yellow)
-![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF)
+![Live Dashboard](https://img.shields.io/badge/Dashboard-Live-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-55%20passing-brightgreen)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![K8s](https://img.shields.io/badge/K8s-Minikube-blue)
 
 ---
 
-## 📖 What is DriftLens Deep Analyzer?
+## 🎯 What is DriftLens Deep Analyzer?
 
-When you manage multiple Kubernetes environments (`dev`, `staging`, `prod`), configurations naturally drift apart over time. 
+When you manage multiple Kubernetes environments (`dev`, `staging`, `prod`), configs drift apart over time. **DriftLens Deep Analyzer**:
 
-**DriftLens Deep Analyzer** automatically detects, measures, and visualizes configuration drift across Kubernetes manifests using a dual-algorithm approach:
-
-- 🔍 **Detects WHAT changed** between environments (Keys & Values)
-- 📊 **Measures HOW MUCH drift exists** using combined similarity scoring
-- 🤖 **Automatically triggers** CI/CD analysis when manifests change
-- 📺 **Shows real-time status** via a Live Dashboard with 5s auto-polling
-
-### 🔬 How The Dual-Algorithm Engine Works
-
-```text
-1. Jaccard Similarity (40% Weight) — Measures KEY PRESENCE drift
-   Formula: |A ∩ B| / |A ∪ B|
-   Evaluates structural differences and key availability between manifests.
-
-2. Cosine Similarity (60% Weight) — Measures VALUE drift
-   Formula: (A · B) / (|A| × |B|)
-   Evaluates actual value variations for common configuration keys.
-
-Combined Score = (0.40 × Jaccard) + (0.60 × Cosine)
-```
+- 🔍 Detects **what** changed between environments
+- 📊 Measures **how much** drift exists
+- 🤖 **Automatically** runs when configs change
+- 📺 Shows results in a **Live Dashboard**
 
 ---
 
 ## 🏗️ Architecture
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│                       Developer Workflow                    │
-│  1. Edit K8s Manifests (k8s/overlays/dev or prod)           │
-│  2. Push changes to GitHub (`git push origin main`)          │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   GitHub Actions Pipeline                   │
-│  3. Triggered by workflow (.github/workflows/drift-detect.yml)│
-│  4. Runs deep detection engine (scripts/detect_drift.py)    │
-│     ├── Evaluates Jaccard Similarity (40%)                  │
-│     └── Evaluates Cosine Similarity (60%)                   │
-│  5. Generates & commits drift-results.json back to repository │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────┐
-│              Live Dashboard (http://localhost:3001)         │
-│  6. Frontend polls raw commit output every 5 seconds         │
-│  7. Renders real-time metrics:                              │
-│     ├── Combined Drift Scores & Risk Levels                 │
-│     ├── Value Differences Breakdown                         │
-│     └── Missing Keys Matrix Across Environments             │
-└──────────────────────────────┘
+Developer
+│
+│ 1. Edit k8s config
+│    k8s/overlays/dev/configmap.yaml
+│    k8s/overlays/prod/configmap.yaml
+│
+│ 2. git push
+▼
+GitHub
+│
+│ 3. GitHub Actions triggers
+│    (.github/workflows/drift-detect.yml)
+│
+│ 4. Runs drift detection
+│    scripts/detect_drift.py
+│    → Jaccard Similarity (40%)
+│    → Cosine Similarity  (60%)
+│
+│ 5. Saves drift-results.json
+│    Commits back to repo
+▼
+Dashboard (http://localhost:3001)
+│
+│ 6. Polls every 5 seconds
+│    Reads from GitHub Raw URL
+│
+│ 7. Shows Live Results:
+│    → Drift scores
+│    → Value differences
+│    → Keys only in dev/prod
+│    → Environment matrix
+▼
+✅ No manual steps needed!
 ```
-
----
-
-## ✨ Features
-
-| Feature | Description |
-|---|---|
-| 🔍 **Deep Drift Detection** | Multi-dimensional manifest comparison across all environments |
-| 🧮 **Dual Scoring Engine** | Blends Jaccard (keys) and Cosine (values) similarity models |
-| 📺 **Live Dashboard** | Auto-polling Next.js frontend rendering real-time drift metrics |
-| 🚦 **Risk Level System** | Categorizes drift: NO DRIFT / LOW / MODERATE / HIGH / CRITICAL |
-| 📊 **Matrix Analysis** | Multi-environment grid view comparing all environments at once |
-| 🐳 **Containerized** | Multi-stage Docker deployment managed via Docker Compose |
-| ☸️ **K8s & Kustomize Native** | Integrated structure supporting Kustomize overlays |
-| 🤖 **Automated CI Workflow** | Headless script execution via GitHub Actions |
-| 🔌 **REST API** | Fast, interactive FastAPI OpenAPI backend |
-| 🧪 **Extensively Tested** | 55 unit tests covering algorithms, tokenizers, and filters |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
 - Docker + Docker Compose
+- Minikube
+- kubectl
 - Git
-
-### One Command Deployment!
-
-```bash
-# Step 1: Clone Repository
-git clone https://github.com/pakaashok/driftlens-deep-analyzer.git
-cd driftlens-deep-analyzer
-
-# Step 2: Start Container Stack
-docker-compose up -d
-```
-
-Open Dashboard: [**http://localhost:3001**](http://localhost:3001) 🎉
 
 ---
 
-## 🔄 GitOps Workflow
+## 🐳 Part 1: Dashboard + API (Docker Compose)
 
-### Step 1: Edit K8s Manifests
 ```bash
-# Edit development overlay configuration
+# Step 1: Clone
+git clone https://github.com/pakaashok/driftlens-deep-analyzer
+cd driftlens-deep-analyzer
+
+# Step 2: Start
+docker-compose up -d
+
+# Step 3: Verify
+docker-compose ps
+
+# Step 4: Open browser
+http://localhost:3001
+```
+
+### Verify API
+
+```bash
+# Health check
+curl http://localhost:8001/api/health
+
+# Latest drift results
+curl http://localhost:8001/api/drift-results
+
+# Environments
+curl http://localhost:8001/api/environments
+```
+
+---
+
+## ☸️ Part 2: Kubernetes Deployment (Minikube)
+
+```bash
+# Step 1: Start Minikube
+minikube start --driver=docker
+minikube status
+
+# Step 2: Create Namespaces
+kubectl create namespace driftlens-dev
+kubectl create namespace driftlens-prod
+
+# Step 3: Deploy Dev Environment
+kubectl apply -k k8s/overlays/dev/
+
+# Step 4: Deploy Prod Environment
+kubectl apply -k k8s/overlays/prod/
+
+# Step 5: Verify Pods Running
+kubectl get pods -n driftlens-dev
+kubectl get pods -n driftlens-prod
+
+# Step 6: Get Access URLs
+minikube service dev-driftlens-deep-frontend   -n driftlens-dev --url
+
+minikube service prod-driftlens-deep-frontend   -n driftlens-prod --url
+```
+
+### Expected Output
+
+```text
+=== DEV ===
+NAME                                           READY
+dev-driftlens-deep-backend-xxx                 1/1
+dev-driftlens-deep-frontend-xxx                1/1
+
+=== PROD ===
+NAME                                           READY
+prod-driftlens-deep-backend-xxx-1              1/1
+prod-driftlens-deep-backend-xxx-2              1/1
+prod-driftlens-deep-backend-xxx-3              1/1
+prod-driftlens-deep-frontend-xxx               1/1
+```
+
+---
+
+## 🔄 GitOps Flow - How Drift Detection Works
+
+### Step 1: Edit K8s Config
+```bash
+# Edit dev config
 vim k8s/overlays/dev/configmap.yaml
 
-# Edit production overlay configuration
+# Edit prod config
 vim k8s/overlays/prod/configmap.yaml
 ```
 
-### Step 2: Commit & Push Changes
+### Step 2: Push Changes
 ```bash
 git add k8s/
-git commit -m "update: sync production configuration values"
+git commit -m "update: prod config change"
 git push origin main
 ```
 
-### Step 3: View Auto-Updated Results
+### Step 3: GitHub Actions Auto-Runs
 ```text
-1. GitHub Actions workflow triggers automatically (~40s runtime)
-2. Live Dashboard updates automatically via 5s polling cycle
-3. View updated drift score directly at http://localhost:3001
+Push triggers GitHub Actions (~40s):
+  → Runs Jaccard + Cosine analysis
+  → Detects what changed
+  → Updates drift-results.json
+  → Commits results back to repo
+```
+
+### Step 4: Dashboard Auto-Updates
+```text
+Frontend polls every 5 seconds:
+  → Reads from GitHub Raw URL
+  → Shows updated drift scores
+  → No manual steps needed! ✅
 ```
 
 ---
 
 ## 📺 Dashboard Features
 
-* **🔴 Live Drift Tab**
-  * Auto-updates every 5 seconds
-  * Displays current repository commit metadata
-  * Visualizes Jaccard, Cosine, and Combined scores
-  * Renders explicit key-value difference tables
-* **🔬 Manual Tab**
-  * Execute on-demand comparisons between any two environments
-* **📊 Matrix Tab**
-  * View cross-environment similarity scores in a single grid
+### 🔴 Live Drift Tab
+- Auto-updates every 5 seconds
+- Shows:
+  - Latest GitHub commit info
+  - Jaccard score (key drift)
+  - Cosine score (value drift)
+  - Combined score
+  - Value differences table
+  - Keys only in dev
+  - Keys only in prod
+
+### 🔬 Manual Tab
+- Compare any two environments:
+  - `dev` vs `prod`
+  - `dev` vs `staging`
+  - `staging` vs `prod`
+- On-demand analysis
+
+### 📊 Matrix Tab
+- All environments compared:
+  - `dev` → `prod` → `staging`
+  - `prod` → `dev` → `staging`
+  - `staging` → `dev` → `prod`
+- Color-coded drift levels
 
 ---
 
 ## 📁 Project Structure
 
-```text
+```kotlin
 driftlens-deep-analyzer/
-├── 🐳 docker-compose.yml             # Local multi-container deployment
-├── 📊 drift-results.json             # Live CI scan output target
-├── 📝 README.md                      # Project documentation
 │
-├── ☸️  k8s/                           # Kubernetes manifests (Kustomize)
-│   ├── base/                         # Base deployments and services
-│   └── overlays/                     # Environment-specific patches
-│       ├── dev/                      # Dev environment overlays
-│       └── prod/                     # Prod environment overlays
+├── 🐳 docker-compose.yml
+│      └── One command deployment!
 │
-├── 🐍 backend/                       # Python FastAPI Engine
-│   ├── Dockerfile                    # Container definition
-│   ├── requirements.txt
+├── 📊 drift-results.json
+│      └── Auto-updated by GitHub Actions
+│
+├── ☸️  k8s/
+│   ├── base/
+│   │   ├── backend-deployment.yaml
+│   │   ├── backend-service.yaml
+│   │   ├── frontend-deployment.yaml
+│   │   ├── frontend-service.yaml
+│   │   └── kustomization.yaml
+│   └── overlays/
+│       ├── dev/
+│       │   ├── configmap.yaml   ← Edit this!
+│       │   └── kustomization.yaml
+│       └── prod/
+│           ├── configmap.yaml   ← Edit this!
+│           └── kustomization.yaml
+│
+├── 🐍 backend/
 │   ├── app/
-│   │   ├── core/                     # Math & Parsing Core
-│   │   │   ├── jaccard.py            # Jaccard algorithm implementation
-│   │   │   ├── cosine.py             # Cosine algorithm implementation
-│   │   │   ├── combined.py           # Weighted similarity combiner
-│   │   │   ├── tokenizer.py          # YAML tokenizer
-│   │   │   └── k8s_filter.py         # Metadata/Noise filtering
-│   │   ├── api/                      # REST Endpoints
-│   │   │   └── routes.py
-│   │   ├── models/                   # Schemas & Types
-│   │   │   └── schemas.py
-│   │   ├── modules/                  # Kubernetes load routines
-│   │   │   └── kubernetes.py
-│   │   └── main.py                   # FastAPI Application Entry
-│   └── tests/                        # PyTest Suite
-│       ├── test_jaccard.py           # 20 Jaccard tests
-│       ├── test_cosine.py            # 20 Cosine tests
-│       └── test_tokenizer.py         # 15 Tokenizer tests
+│   │   ├── core/
+│   │   │   ├── jaccard.py       ← Jaccard algo
+│   │   │   ├── cosine.py        ← Cosine algo
+│   │   │   ├── combined.py      ← Combined scorer
+│   │   │   ├── tokenizer.py     ← YAML tokenizer
+│   │   │   └── k8s_filter.py    ← Noise filter
+│   │   ├── api/
+│   │   │   └── routes.py        ← API endpoints
+│   │   ├── models/
+│   │   │   └── schemas.py       ← Data models
+│   │   ├── modules/
+│   │   │   └── kubernetes.py    ← K8s loader
+│   │   └── main.py              ← FastAPI app
+│   ├── tests/
+│   │   ├── test_jaccard.py      ← 20 tests
+│   │   ├── test_cosine.py       ← 20 tests
+│   │   └── test_tokenizer.py    ← 15 tests
+│   ├── requirements.txt
+│   └── Dockerfile
 │
-├── ⚛️  frontend/                      # Next.js Live Dashboard
-│   ├── Dockerfile                    # Multi-stage production build
-│   ├── app/                          # Next.js App Router
-│   │   ├── dashboard.tsx             # Primary dashboard interface
+├── ⚛️  frontend/
+│   ├── app/
+│   │   ├── dashboard.tsx        ← Main dashboard
 │   │   ├── page.tsx
 │   │   └── globals.css
-│   └── lib/                          # API client layer
-│       └── api.ts
+│   ├── lib/
+│   │   └── api.ts               ← API client
+│   └── Dockerfile
 │
-├── 📜 scripts/                        # Automation & CI Scripts
-│   ├── detect_drift.py               # Standalone drift detection script
-│   └── check-drift.sh                # Local CLI verification wrapper
+├── 📜 scripts/
+│   ├── detect_drift.py          ← Drift detector
+│   └── check-drift.sh           ← Manual check
 │
-└── 🤖 .github/                       # GitHub Actions Workflows
+└── 🤖 .github/
     └── workflows/
-        ├── drift-detect.yml          # Automated CI drift analysis
-        └── deploy.yml                # Docker build & push workflow
+        ├── drift-detect.yml     ← Auto drift CI
+        └── deploy.yml           ← Docker build CI
 ```
 
 ---
 
-## 📊 Drift Level Classification
+## 📊 Algorithms
 
-| Level | Score Threshold | Meaning | Action Needed |
-| :--- | :--- | :--- | :--- |
-| ✅ **NO DRIFT** | 100% | Environments fully aligned | None |
-| 🔵 **LOW DRIFT** | > 90% | Minor configuration variances | Safe to promote |
-| 🟡 **MODERATE** | > 70% | Noticeable value or key differences | Review changes |
-| 🟠 **HIGH DRIFT** | > 50% | Major configuration differences | Manual sync recommended |
-| 🔴 **CRITICAL** | < 50% | Severe configuration divergence | **Do NOT promote!** |
+### Jaccard Similarity (40% weight)
+Measures **KEY PRESENCE** drift. Compares which config keys exist in each environment.
+
+$$	ext{Score} = rac{|A \cap B|}{|A \cup B|}$$
+
+### Cosine Similarity (60% weight)
+Measures **VALUE** drift. Compares actual config values between environments.
+
+$$	ext{Score} = rac{A \cdot B}{\|A\| 	imes \|B\|}$$
+
+### Drift Levels
+
+| Level | Score | Meaning |
+| :--- | :--- | :--- |
+| ✅ **NO DRIFT** | 100% | Perfectly in sync |
+| 🔵 **LOW DRIFT** | >90% | Minor differences |
+| 🟡 **MODERATE** | >70% | Review before promote |
+| 🟠 **HIGH DRIFT** | >50% | Action required |
+| 🔴 **CRITICAL** | <50% | Do NOT promote! |
 
 ---
 
-## 🌐 API Reference
+## 🌐 API Endpoints
 
-### Health Check
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/health` | Service health |
+| `GET` | `/api/environments` | List environments |
+| `GET` | `/api/analyze` | Deep drift analysis |
+| `GET` | `/api/analyze/matrix` | All envs matrix |
+| `GET` | `/api/drift-results` | Latest CI results |
 
-```http
-GET /api/health
-```
-
-### Compare Environments
-
-```http
-GET /api/analyze?env_a=dev&env_b=prod
-```
-
-### Retrieve Environment Matrix
-
-```http
-GET /api/analyze/matrix
-```
-
-### Retrieve Latest CI Drift Scan
-
-```http
-GET /api/drift-results
-```
-
-### CLI Quick Examples
+### Examples
 
 ```bash
-# Check Backend Health
+# Health check
 curl http://localhost:8001/api/health
 
-# Run Deep Analysis (Dev vs Prod)
+# Analyze dev vs prod
 curl "http://localhost:8001/api/analyze?env_a=dev&env_b=prod"
 
-# Get Matrix View
+# Get latest drift results
+curl http://localhost:8001/api/drift-results
+
+# Get matrix
 curl http://localhost:8001/api/analyze/matrix
 ```
 
 ---
 
-## ☸️ Kubernetes Local Deployment
-
-Deploy sample applications directly to a local Minikube cluster:
-
-```bash
-# Start Minikube cluster
-minikube start --driver=docker
-
-# Create environment namespaces
-kubectl create namespace driftlens-dev
-kubectl create namespace driftlens-prod
-
-# Apply Kustomize manifests
-kubectl apply -k k8s/overlays/dev/
-kubectl apply -k k8s/overlays/prod/
-
-# Verify active resources
-kubectl get all -n driftlens-dev
-kubectl get all -n driftlens-prod
-
-# Get interactive URL endpoints
-minikube service dev-driftlens-deep-frontend -n driftlens-dev --url
-minikube service prod-driftlens-deep-frontend -n driftlens-prod --url
-```
-
----
-
-## 🧪 Local Test Execution
+## 🧪 Tests
 
 ```bash
 cd backend
-
-# Setup environment
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# Run full test suite
+# Run unit tests
 pytest tests/ -v
-```
 
-### Expected Output
-```text
-tests/test_jaccard.py   - 20 passed ✅
-tests/test_cosine.py    - 20 passed ✅
-tests/test_tokenizer.py - 15 passed ✅
-
-Total: 55 passed  ✅
+# Results:
+# test_jaccard.py   - 20 passed ✅
+# test_cosine.py    - 20 passed ✅
+# test_tokenizer.py - 15 passed ✅
+# Total: 55 passed  ✅
 ```
 
 ---
 
-## 🐳 Docker Container Operations
+## 🐳 Docker Images
 
 ```bash
-# Start full application stack
+# Pull manually
+docker pull adeeashok/driftlens-deep-analyzer:latest
+docker pull adeeashok/driftlens-deep-frontend:latest
+
+# Or use docker-compose (recommended)
 docker-compose up -d
-
-# Stop running containers
-docker-compose down
-
-# Tail container logs
-docker-compose logs -f
-
-# Rebuild containers after source updates
-docker-compose up -d --build
 ```
 
 ---
 
-## 🤖 GitHub Actions Setup
+## 🤖 GitHub Actions Workflows
 
-To enable automated Docker image builds and repository publishing, set up the following secrets under **GitHub → Settings → Secrets and variables → Actions**:
+### `drift-detect.yml`
+- **Triggers:** `k8s/**` file changes
+- **Steps:**
+  1. Checkout code
+  2. Install Python deps
+  3. Run `detect_drift.py`
+  4. Save `drift-results.json`
+  5. Commit results back to repo
+
+### `deploy.yml`
+- **Triggers:** Any push to `main`
+- **Steps:**
+  1. Run 55 tests
+  2. Build backend Docker image
+  3. Build frontend Docker image
+  4. Push to Docker Hub
+
+---
+
+## 🔧 GitHub Secrets Required
+
+Configure secrets under **GitHub → Settings → Secrets → Actions → New repository secret**:
 
 ```makefile
 DOCKER_USERNAME = your-dockerhub-username
@@ -344,42 +400,25 @@ DOCKER_PASSWORD = your-dockerhub-token
 
 ---
 
-## 📈 Sample Results Output
+## 📈 Sample Results
 
 ```text
-dev vs prod Analysis Output:
-┌────────────────────────────────────────┐
-│ Jaccard Score:  74.2%  (Key Drift)     │
-│ Cosine Score:   83.1%  (Value Drift)   │
-│ Combined Score: 75.5%  (Overall)       │
-│ Status Level:   MODERATE DRIFT         │
-└────────────────────────────────────────┘
+dev vs prod Analysis:
+┌─────────────────────────────────┐
+│ Jaccard:  74.2%  (key drift)    │
+│ Cosine:   83.1%  (value drift)  │
+│ Combined: 75.5%  (overall)      │
+│ Level:    MODERATE DRIFT        │
+└─────────────────────────────────┘
 
-Keys Present Only in Production:
-  - data.ALERT_EMAIL
-  - data.MONITORING_ENABLED
-  - data.NEW_FEATURE
-  - data.RATE_LIMIT
+Keys only in prod:
+  data.ALERT_EMAIL
+  data.MONITORING_ENABLED
+  data.NEW_FEATURE
+  data.RATE_LIMIT
 
-Value Differences Identified:
-  - data.LOG_LEVEL:       debug → warn
-  - data.REPLICAS:        1 → 3
-  - data.MAX_CONNECTIONS:  10 → 200
-  - data.TIMEOUT:         30 → 120
-```
-
----
-
-## 👨‍💻 Built With
-
-| **Technology** | **Purpose** |
-|---|---|
-| Python 3.12 | Core analysis engine & backend logic |
-| FastAPI | REST API framework & OpenAPI generation |
-| Next.js 16 | React dashboard framework |
-| Tailwind CSS | Styling & UI layout |
-| Docker | Containerization and stack composition |
-| Kubernetes | Target environment orchestration |
-| Kustomize | Kubernetes configuration management |
-| GitHub Actions | Automated CI/CD execution pipeline |
-| PyTest | Comprehensive unit testing framework |
+Value Differences:
+  data.LOG_LEVEL:       debug → warn
+  data.REPLICAS:        1 → 3
+  data.MAX_CONNECTIONS: 10 → 200
+  data.TIMEOUT:         30 → 120

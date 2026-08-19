@@ -26,3 +26,5 @@ data:
   DEBUG_MODE: "false"
   EXTRA_FEATURE: "enabled"
   MAX_RETRIES: "5"
+  DB_POOL_SIZE: "50"
+  SESSION_TIMEOUT: "3600"
